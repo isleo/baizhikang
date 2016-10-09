@@ -1,0 +1,9 @@
+/vendor
+/storage
+/public/packages
+/app/Http/Controllers/Api/TestController.php
+/resources/view/test.blade.php
+.env
+*.swp
+composer.lock
+bootstrap/cache
