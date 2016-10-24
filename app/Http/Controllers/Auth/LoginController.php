@@ -36,4 +36,13 @@ class LoginController extends Controller
     {
         $this->middleware('guest', ['except' => 'logout']);
     }
+
+    public function login() {
+/*        $validator = new Validator();
+        $validator->make(['title' => 3], [
+            'title' => 'required',
+            'body' => 'required',
+        ]);*/
+        dd('sfsdfsdf');
+    }    
 }

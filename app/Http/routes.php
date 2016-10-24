@@ -15,3 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('home', 'testController@test');
+Route::get('login', 'Auth\LoginController@login');
+Route::group(['prefix' => 'api', 'namespace' => 'Api'], function() {
+
+    Route::get('login'         , 'UserController@login');
+    Route::get('register'         , 'UserController@register');
+
+});
