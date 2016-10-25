@@ -20,5 +20,5 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function() {
 
     Route::get('login'         , 'UserController@login');
     Route::get('register'         , 'UserController@register');
-
+    Route::get('getValidateCode'         , 'UserController@getValidateCode');
 });
