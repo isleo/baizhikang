@@ -44,7 +44,7 @@ class UserController extends BaseController
                 $this->api_response['msg'] = $userData;
                 $user->updateUser($data);
             } else {
-                $this->api_response['status'] = -1;
+                $this->api_response['status'] = -2;
                 $this->api_response['msg'] = '密码错误';
             }
         } else {
@@ -67,7 +67,7 @@ class UserController extends BaseController
         $resCode = $request->input('validateCode');
         $validateCode = Session::get('validateCode');
         if ($resCode != $validateCode) {
-            $this->api_response['status'] = -1;
+            $this->api_response['status'] = -3;
             $this->api_response['msg'] = '验证码错误';
         } else {
             if (empty($res)) {
@@ -75,7 +75,7 @@ class UserController extends BaseController
                 $this->api_response['status'] = 0;
                 $this->api_response['msg'] = '注册成功';
             } else {
-                $this->api_response['status'] = -1;
+                $this->api_response['status'] = -2;
                 $this->api_response['msg'] = '手机号已存在';
             }
         }
@@ -88,6 +88,11 @@ class UserController extends BaseController
     public function getValidateCode(Request $request)
     {
         $mobile = $request->input('mobile');
+        if (empty($mobile)) {
+            $retval['status'] = -3;
+            $retval['msg'] = '手机号码为空';
+            return response()->json($retval);
+        }
         $umsCode = mt_rand(1000,9999);
         Session::put('validateCode', $umsCode);
         $c = new TopClient;
@@ -110,7 +115,7 @@ class UserController extends BaseController
                 $retval['msg'] = '发送失败';
             }
         } else {
-            $retval['status'] = -1;
+            $retval['status'] = -2;
             $retval['msg'] = '发送失败,' . $msg['msg'];;
             if (isset($msg['sub_msg'])) {
                 $retval['msg'] .= ':' . $msg['sub_msg'];

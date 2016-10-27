@@ -29,7 +29,7 @@ class AuthRegisterRequest extends Request
     {
         $return = [
             'mobile' => 'required',
-            'password' => 'sometimes|required|between:6,20',
+            'password' => 'required|between:6,20',
             'validateCode' => 'required',
         ];
         return $return;
