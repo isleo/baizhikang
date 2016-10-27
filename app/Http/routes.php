@@ -15,6 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('home', 'testController@test');
+Route::get('testPush', 'Api\PushController@testPush');
 Route::get('login', 'Auth\LoginController@login');
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function() {
 
