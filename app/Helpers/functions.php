@@ -71,8 +71,9 @@ function checkToken($token, $time=true)
     return $data[0];
 }
 
-function generateToken($id, $time=7*60*60*24)
+function generateToken($id)
 {
+    $time = 7*24*60*60;
     $expireTime = time() + $time;
     $token = encryptToken($id . ':' . $expireTime);
     return $token;
