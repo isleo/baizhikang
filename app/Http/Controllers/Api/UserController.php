@@ -73,6 +73,7 @@ class UserController extends BaseController
      */
     public function register(AuthRegisterRequest $request, User $user)
     {
+        return response()->json(['status' => 1]);
         $data['mobile'] = $request->input('mobile');
         $data['password'] = md5(md5($request->input('password')));
         try {
