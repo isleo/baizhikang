@@ -20,6 +20,8 @@ Route::get('login', 'Auth\LoginController@login');
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function() {
 
     Route::post('login'         , 'UserController@login');
+    Route::post('uploadAvatar'         , 'UserController@uploadAvatar');
+    Route::post('updateUserInfo'         , 'UserController@updateUserInfo');
     Route::post('register'         , 'UserController@register');
     Route::get('getValidateCode'         , 'UserController@getValidateCode');
 });

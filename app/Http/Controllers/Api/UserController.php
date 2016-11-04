@@ -15,6 +15,7 @@ use Session;
 use Tools\TopClient;
 use Tools\AlibabaAliqinFcSmsNumSendRequest;
 use Model\User;
+use Illuminate\Database\QueryException;
 
 class UserController extends BaseController
 {
@@ -32,24 +33,36 @@ class UserController extends BaseController
     {
         $mobile = $request->input('mobile');
         $password = md5(md5($request->input('password')));
-        $res = $user->where('mobile', $mobile)->first();
-        if (!empty($res)) {
+        try {
+            $res = $user->where('mobile', $mobile)->first();
+            if (empty($res)) {
+                $this->api_response['status'] = -1;
+                $this->api_response['msg'] = '账号不存在';
+                return response()->json($this->api_response);
+            }
+            $resStatus = $user->where('mobile', $mobile)->where('status', 1)->first();
+            if (empty($resStatus)) {
+                $this->api_response['status'] = -2;
+                $this->api_response['msg'] = '用户被拉黑';
+                return response()->json($this->api_response);
+            }
             $resData = $user->where('mobile', $mobile)->where('password', $password)->first();
             if (!empty($resData)) {
                 $data['loginTime'] = time();
                 $data['id'] = $resData->id;
+                $user->updateUser($data);
                 $this->api_response['status'] = 0;
                 $userData = $resData->toArray();
-                $userData['loginTime'] = time();
+                $userData['loginTime'] = (string)time();
+                $userData['token'] = generateToken($userData['id']);
                 $this->api_response['msg'] = $userData;
-                $user->updateUser($data);
             } else {
-                $this->api_response['status'] = -2;
+                $this->api_response['status'] = -3;
                 $this->api_response['msg'] = '密码错误';
             }
-        } else {
-            $this->api_response['status'] = -1;
-            $this->api_response['msg'] = '账号不存在';
+        } catch (QueryException $e) {
+            $this->api_response['status'] = -4;
+            $this->api_response['msg'] = '操作失败';
         }
         return response()->json($this->api_response);
     }
@@ -62,14 +75,16 @@ class UserController extends BaseController
     {
         $data['mobile'] = $request->input('mobile');
         $data['password'] = md5(md5($request->input('password')));
-        $res = $user->where('mobile', $data['mobile'])->first();
-        $data['createTime'] = time();
-        $resCode = $request->input('validateCode');
-        $validateCode = Session::get('validateCode');
-        if ($resCode != $validateCode) {
-            $this->api_response['status'] = -3;
-            $this->api_response['msg'] = '验证码错误';
-        } else {
+        try {
+            $res = $user->where('mobile', $data['mobile'])->first();
+            $data['createTime'] = time();
+            $resCode = $request->input('validateCode');
+            $validateCode = Session::get('validateCode');
+            if ($resCode != $validateCode[$data['mobile']]) {
+                $this->api_response['status'] = -3;
+                $this->api_response['msg'] = '验证码错误';
+                return response()->json($this->api_response);
+            }
             if (empty($res)) {
                 $id = $user->createUser($data);
                 $this->api_response['status'] = 0;
@@ -78,6 +93,9 @@ class UserController extends BaseController
                 $this->api_response['status'] = -2;
                 $this->api_response['msg'] = '手机号已存在';
             }
+        } catch (QueryException $e) {
+            $this->api_response['status'] = -4;
+            $this->api_response['msg'] = '操作失败';
         }
         return response()->json($this->api_response);
     }
@@ -94,7 +112,9 @@ class UserController extends BaseController
             return response()->json($retval);
         }
         $umsCode = mt_rand(1000,9999);
-        Session::put('validateCode', $umsCode);
+        $umsCodeArr = empty(Session::get('validateCode'))?[]:Session::get('validateCode');
+        $umsCodeArr[$mobile] = $umsCode;
+        Session::put('validateCode', $umsCodeArr);
         $c = new TopClient;
         $c->appkey = '23436766';
         $c->secretKey = 'a7d084b977413ee98f17b84e77c6ab8a';
@@ -122,5 +142,102 @@ class UserController extends BaseController
             }
         }
         return response()->json($retval);
-    }    
+    }
+
+    public function uploadAvatar(Request $request, User $user)
+    {
+        $token = $request->input('token');
+        $token = checkToken($token);
+        try {
+            if (!$token) {
+                $retval['status'] = -1;
+                $retval['msg'] = 'token出错';
+                return response()->json($retval);
+            }
+            $resData = $user->where('status', 1)->where('id', $token)->first();
+            if (empty($resData)) {
+                $retval['status'] = -2;
+                $retval['msg'] = '该用户不存在';
+                return response()->json($retval);
+            }
+            if ($request->hasFile('avatar')) {
+                $file = $request->file('avatar');
+                // $max_filesize = 2;
+                // $filesize = $file->getSize();
+                // $filesize /= 1000;
+                // if ($max_filesize && $filesize > $max_filesize) {
+                //     $this->api_response['status'] = -3;
+                //     $this->api_response['msg'] = '文件大小不能超过' . ($max_filesize / 1000) . 'M！当前为' . round($filesize / 1000, 1) . 'M！';
+                //     return response()->json($retval);
+                // }
+
+                $uploadPath = public_path() . '/data/';
+                $extnames = ['jpg', 'jpeg', 'png'];
+                $extName = $file->getClientOriginalExtension();
+                $extName = strtolower($extName);
+                if (in_array($extName, $extnames)) {
+                    $fileName = $token . '.' . $extName;
+                } else {
+                    $retval['status'] = -4;
+                    $retval['msg'] = '上传文件只能是（' . implode('|', $extnames) . '）文件!当前是' . $extName . '文件！';
+                    return response()->json($retval);
+                }
+
+                try {
+                    $state = $file->move($uploadPath, $fileName);
+                } catch (FileException $e) {
+                    $retval['status'] = -1;
+                    $retval['msg'] = '文件保存错误!';
+                    return response()->json($retval);
+                }
+
+                $retval['status'] = 0;
+                $retval['msg'] = 'http://' . $request->getHttpHost() . '/data/' . $fileName;
+                $data['id'] = $token;
+                $data['avatar'] = $retval['msg'];
+                $user->updateUser($data);
+                return response()->json($retval);
+            }
+        } catch (QueryException $e) {
+            $retval['status'] = -5;
+            $retval['msg'] = '操作失败';
+            return response()->json($retval);
+        }
+    }
+
+    public function updateUserInfo(Request $request, User $user)
+    {
+        $token = $request->input('token');
+        $token = checkToken($token);
+        try {
+            if (!$token) {
+                $retval['status'] = -1;
+                $retval['msg'] = 'token出错';
+                return response()->json($retval);
+            }
+            $resData = $user->where('status', 1)->where('id', $token)->first();
+            if (empty($resData)) {
+                $retval['status'] = -2;
+                $retval['msg'] = '该用户不存在';
+                return response()->json($retval);
+            }
+
+            $data = $request->except('mobile', 'password', 'status', 'loginTime', 'createTime', 'token');
+            $data['id'] = $token;
+            $state = $user->updateUser($data);
+            if ($state !== false) {
+                $retval['status'] = 0;
+                $retval['msg'] = '编辑成功';
+                return response()->json($retval);
+            } else {
+                $retval['status'] = -3;
+                $retval['msg'] = '编辑失败';
+                return response()->json($retval);
+            }
+        } catch (QueryException $e) {
+            $retval['status'] = -4;
+            $retval['msg'] = '操作失败';
+            return response()->json($retval);
+        }
+    }
 }

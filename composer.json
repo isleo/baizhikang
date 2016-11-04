@@ -23,7 +23,10 @@
             "App\\": "app/",
             "Tools\\": "tools/",
             "Model\\": "model/"
-        }
+        },
+        "files": [
+            "app/Helpers/functions.php"
+        ]
     },
     "autoload-dev": {
         "classmap": [
