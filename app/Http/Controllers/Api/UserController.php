@@ -105,7 +105,6 @@ class UserController extends BaseController
      */
     public function getValidateCode(Request $request)
     {
-        return response()->json(['status' => 1]);
         $mobile = $request->input('mobile');
         if (empty($mobile)) {
             $retval['status'] = -3;
