@@ -15,6 +15,7 @@ use Session;
 use Tools\TopClient;
 use Tools\AlibabaAliqinFcSmsNumSendRequest;
 use Model\User;
+use Model\UserRelationship;
 use Illuminate\Database\QueryException;
 
 class UserController extends BaseController
@@ -236,6 +237,99 @@ class UserController extends BaseController
             }
         } catch (QueryException $e) {
             $retval['status'] = -4;
+            $retval['msg'] = '操作失败';
+            return response()->json($retval);
+        }
+    }
+
+    public function bindUser(Request $request, UserRelationship $relationship)
+    {
+        $token = $request->input('userToken');
+        $token = checkToken($token);
+        $mobile = $request->input('mobile');
+        try {
+            if (!$token) {
+                $retval['status'] = -1;
+                $retval['msg'] = 'userToken出错';
+                return response()->json($retval);
+            }
+            $resData = $user->where('status', 1)->where('id', $token)->first();
+            if (empty($resData)) {
+                $retval['status'] = -2;
+                $retval['msg'] = '该用户不存在';
+                return response()->json($retval);
+            }
+            $bindData = $user->where('status', 1)->where('mobile', $mobile)->first();
+            if (empty($bindData)) {
+                $retval['status'] = -3;
+                $retval['msg'] = '关联用户不存在';
+                return response()->json($retval);
+            }
+            $resCode = $request->input('validateCode');
+            $validateCode = Session::get('validateCode');
+            if (!isset($validateCode[$mobile]) || $resCode != $validateCode[$mobile]) {
+                $retval['status'] = -4;
+                $retval['msg'] = '验证码错误';
+                return response()->json($retval);
+            }
+            $data['userId'] = $token;
+            $data['relationId'] = $bindData->id;
+            $data['createTime'] = time();
+            $relationship->createRelationship($data);
+            $retval['status'] = 0;
+            $retval['msg'] = '绑定成功';
+            return response()->json($retval);
+        } catch (QueryException $e) {
+            $retval['status'] = -5;
+            $retval['msg'] = '操作失败';
+            return response()->json($retval);
+        }
+    }
+
+    public function unbindUser(Request $request, UserRelationship $relationship)
+    {
+        $token = $request->input('userToken');
+        $token = checkToken($token);
+        $mobile = $request->input('mobile');
+        try {
+            if (!$token) {
+                $retval['status'] = -1;
+                $retval['msg'] = 'userToken出错';
+                return response()->json($retval);
+            }
+            $resData = $user->where('status', 1)->where('id', $token)->first();
+            if (empty($resData)) {
+                $retval['status'] = -2;
+                $retval['msg'] = '该用户不存在';
+                return response()->json($retval);
+            }
+            $bindData = $user->where('status', 1)->where('mobile', $mobile)->first();
+            if (empty($bindData)) {
+                $retval['status'] = -3;
+                $retval['msg'] = '关联用户不存在';
+                return response()->json($retval);
+            }
+            $resCode = $request->input('validateCode');
+            $validateCode = Session::get('validateCode');
+            if (!isset($validateCode[$mobile]) || $resCode != $validateCode[$mobile]) {
+                $retval['status'] = -4;
+                $retval['msg'] = '验证码错误';
+                return response()->json($retval);
+            }
+            $data['userId'] = $token;
+            $data['relationId'] = $bindData->id;
+            $state = $relationship->delRelationship($data);
+            if ($state != false ) {
+                $retval['status'] = 0;
+                $retval['msg'] = '解绑成功';
+                return response()->json($retval);
+            } else {
+                $retval['status'] = -5;
+                $retval['msg'] = '解绑失败';
+                return response()->json($retval);
+            }
+        } catch (QueryException $e) {
+            $retval['status'] = -6;
             $retval['msg'] = '操作失败';
             return response()->json($retval);
         }

@@ -52,8 +52,8 @@ class DeviceController extends Controller
         try{
             if (!$token) {
                 $retval['status'] = -1;
-               $retval['msg'] = 'deviceToken出错';
-               return response()->json($retval);
+                $retval['msg'] = 'deviceToken出错';
+                return response()->json($retval);
             }
             $resData = $device->find($token);
             if (empty($resData)) {

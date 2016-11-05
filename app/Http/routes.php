@@ -23,6 +23,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function() {
     Route::post('uploadAvatar'         , 'UserController@uploadAvatar');
     Route::post('updateUserInfo'         , 'UserController@updateUserInfo');
     Route::post('register'         , 'UserController@register');
+    Route::post('bindUser'         , 'UserController@bindUser');
+    Route::post('unbindUser'         , 'UserController@unbindUser');
     Route::post('addDevice'         , 'DeviceController@addDevice');
     Route::get('getValidateCode'         , 'UserController@getValidateCode');
     Route::get('incrementItem'         , 'DeviceController@incrementItem');
