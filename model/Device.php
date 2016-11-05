@@ -4,14 +4,14 @@ namespace Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model {
+class Device extends Model {
 
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'bzk_user_info';
+    protected $table = 'bzk_device_info_log';
     public $timestamps = false;
 
     /**
@@ -20,22 +20,21 @@ class User extends Model {
      * @var array
      */
     protected $guarded = [];
-    protected $hidden = ['password'];
 
 
-    public function createUser($data)
+    public function createDevice($data)
     {
-        $userInfo = $this->create($data);
-        return $userInfo->attributes['id'];
+        $deviceInfo = $this->create($data);
+        return $deviceInfo->toArray();
     }
 
-    public function delUser($data)
+    public function delDevice($data)
     {
         $re_status = $this->where($data)->delete();
         return $re_status;
     }
 
-    public function showUser($data = '', $offset = '', $number = '')
+    public function showDevice($data = '', $offset = '', $number = '')
     {
         if ('' != $data){
             if ('' != $offset && '' != $number) {
@@ -53,7 +52,7 @@ class User extends Model {
         return $result;
     }
 
-    public function updateUser($data)
+    public function updateDevice($data)
     {
         $re_status = $this->where('id', $data['id'])->update($data);
         return $re_status;

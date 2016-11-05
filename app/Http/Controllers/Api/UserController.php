@@ -54,7 +54,7 @@ class UserController extends BaseController
                 $this->api_response['status'] = 0;
                 $userData = $resData->toArray();
                 $userData['loginTime'] = (string)time();
-                $userData['token'] = generateToken($userData['id']);
+                $userData['userToken'] = generateToken($userData['id']);
                 $this->api_response['msg'] = $userData;
             } else {
                 $this->api_response['status'] = -3;
@@ -80,7 +80,7 @@ class UserController extends BaseController
             $data['createTime'] = time();
             $resCode = $request->input('validateCode');
             $validateCode = Session::get('validateCode');
-            if ($resCode != $validateCode[$data['mobile']]) {
+            if (!isset($validateCode[$data['mobile']]) || $resCode != $validateCode[$data['mobile']]) {
                 $this->api_response['status'] = -3;
                 $this->api_response['msg'] = '验证码错误';
                 return response()->json($this->api_response);
@@ -146,12 +146,12 @@ class UserController extends BaseController
 
     public function uploadAvatar(Request $request, User $user)
     {
-        $token = $request->input('token');
+        $token = $request->input('userToken');
         $token = checkToken($token);
         try {
             if (!$token) {
                 $retval['status'] = -1;
-                $retval['msg'] = 'token出错';
+                $retval['msg'] = 'userToken出错';
                 return response()->json($retval);
             }
             $resData = $user->where('status', 1)->where('id', $token)->first();
@@ -207,12 +207,12 @@ class UserController extends BaseController
 
     public function updateUserInfo(Request $request, User $user)
     {
-        $token = $request->input('token');
+        $token = $request->input('userToken');
         $token = checkToken($token);
         try {
             if (!$token) {
                 $retval['status'] = -1;
-                $retval['msg'] = 'token出错';
+                $retval['msg'] = 'userToken出错';
                 return response()->json($retval);
             }
             $resData = $user->where('status', 1)->where('id', $token)->first();
