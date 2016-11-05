@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50634
 File Encoding         : 65001
 
-Date: 2016-10-29 12:08:24
+Date: 2016-11-05 14:43:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -23,15 +23,15 @@ CREATE TABLE `bzk_device_info_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
   `deviceName` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT '设备名',
   `userId` int(11) unsigned NOT NULL COMMENT '用户id',
-  `disconnectFre` int(11) unsigned DEFAULT NULL COMMENT '断开次数',
-  `sensitivityFre` int(11) unsigned DEFAULT NULL COMMENT '灵敏度报警',
-  `moveFre` int(11) unsigned DEFAULT NULL COMMENT '移动报警',
-  `disappearFre` int(11) unsigned DEFAULT NULL COMMENT '防丢报警',
+  `disconnectFre` int(11) unsigned DEFAULT '0' COMMENT '断开次数',
+  `sensitivityFre` int(11) unsigned DEFAULT '0' COMMENT '灵敏度报警',
+  `moveFre` int(11) unsigned DEFAULT '0' COMMENT '移动报警',
+  `disappearFre` int(11) unsigned DEFAULT '0' COMMENT '防丢报警',
   `linkTime` int(10) unsigned DEFAULT NULL COMMENT '连接时间',
   `createTime` int(10) unsigned DEFAULT NULL COMMENT '创建时间',
   `updateTime` int(10) unsigned DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Table structure for bzk_user_info
@@ -57,7 +57,7 @@ CREATE TABLE `bzk_user_info` (
   `createTime` int(10) unsigned DEFAULT NULL COMMENT '创建时间',
   `updateTime` int(10) unsigned DEFAULT NULL COMMENT '更新时间 ',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Table structure for bzk_user_relationship
@@ -70,4 +70,4 @@ CREATE TABLE `bzk_user_relationship` (
   `createTime` int(10) unsigned DEFAULT NULL COMMENT '创建时间',
   `updateTime` int(10) unsigned DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
