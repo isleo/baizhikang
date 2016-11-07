@@ -25,7 +25,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function() {
     Route::post('register'         , 'UserController@register');
     Route::post('bindUser'         , 'UserController@bindUser');
     Route::post('unbindUser'         , 'UserController@unbindUser');
-    Route::post('addDevice'         , 'DeviceController@addDevice');
+    Route::post('addDeviceLog'         , 'DeviceController@addDeviceLog');
     Route::get('getValidateCode'         , 'UserController@getValidateCode');
-    Route::get('incrementItem'         , 'DeviceController@incrementItem');
+    Route::get('getDeviceInfo'         , 'DeviceController@getDeviceInfo');
 });

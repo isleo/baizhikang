@@ -92,7 +92,7 @@ class UserController extends BaseController
                 $this->api_response['msg'] = '注册成功';
             } else {
                 $this->api_response['status'] = -2;
-                $this->api_response['msg'] = '手机号已存在';
+                $this->api_response['msg'] = '手机号已注册';
             }
         } catch (QueryException $e) {
             $this->api_response['status'] = -4;
@@ -187,7 +187,7 @@ class UserController extends BaseController
                 try {
                     $state = $file->move($uploadPath, $fileName);
                 } catch (FileException $e) {
-                    $retval['status'] = -1;
+                    $retval['status'] = -4;
                     $retval['msg'] = '文件保存错误!';
                     return response()->json($retval);
                 }
