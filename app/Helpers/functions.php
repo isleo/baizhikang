@@ -79,3 +79,10 @@ function generateToken($id)
     return $token;
 }
 
+function createSDK()
+{
+    require_once 'sdk.php';
+    $sdk = new PushSDK();
+    return $sdk;
+}
+
