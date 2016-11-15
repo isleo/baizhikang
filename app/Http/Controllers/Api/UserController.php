@@ -223,7 +223,7 @@ class UserController extends BaseController
                 return response()->json($retval);
             }
 
-            $data = $request->except('mobile', 'password', 'status', 'loginTime', 'createTime', 'token');
+            $data = $request->except('mobile', 'password', 'status', 'loginTime', 'createTime');
             $data['id'] = $token;
             $state = $user->updateUser($data);
             if ($state !== false) {
@@ -237,12 +237,12 @@ class UserController extends BaseController
             }
         } catch (QueryException $e) {
             $retval['status'] = -4;
-            $retval['msg'] = '操作失败';
+            $retval['msg'] = $e->formatMessage();
             return response()->json($retval);
         }
     }
 
-    public function bindUser(Request $request, UserRelationship $relationship)
+    public function bindUser(Request $request, User $user, UserRelationship $relationship)
     {
         $token = $request->input('userToken');
         $token = checkToken($token);
@@ -286,7 +286,7 @@ class UserController extends BaseController
         }
     }
 
-    public function unbindUser(Request $request, UserRelationship $relationship)
+    public function unbindUser(Request $request, User $user, UserRelationship $relationship)
     {
         $token = $request->input('userToken');
         $token = checkToken($token);
@@ -333,5 +333,38 @@ class UserController extends BaseController
             $retval['msg'] = '操作失败';
             return response()->json($retval);
         }
+    }
+
+    /**
+     *  
+     */
+    public function updatePassword(AuthRegisterRequest $request, User $user)
+    {
+        $data['mobile'] = $request->input('mobile');
+        $data['password'] = md5(md5($request->input('password')));
+        try {
+            $res = $user->where('mobile', $data['mobile'])->first();
+            $data['createTime'] = time();
+            $resCode = $request->input('validateCode');
+            $validateCode = Session::get('validateCode');
+            if (!isset($validateCode[$data['mobile']]) || $resCode != $validateCode[$data['mobile']]) {
+                $this->api_response['status'] = -3;
+                $this->api_response['msg'] = '验证码错误';
+                return response()->json($this->api_response);
+            }
+            if (!empty($res)) {
+                $data['id'] = $res->id;
+                $state = $user->updateUser($data);
+                $this->api_response['status'] = 0;
+                $this->api_response['msg'] = '修改密码成功';
+            } else {
+                $this->api_response['status'] = -2;
+                $this->api_response['msg'] = '手机号码不存在';
+            }
+        } catch (QueryException $e) {
+            $this->api_response['status'] = -4;
+            $this->api_response['msg'] = '操作失败';
+        }
+        return response()->json($this->api_response);
     }
 }

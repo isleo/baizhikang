@@ -15,9 +15,10 @@ class DeviceController extends Controller
     public function addDeviceLog(Request $request, User $user, Device $device)
     {
         $token = $request->input('userToken');
+        $deviceName = $request->input('deviceName');
         $token = checkToken($token);
-        $data['deviceName'] = $request->input('deviceName');
-        $item = $request->input('item');
+        $info = $request->input('info');
+        $info = json_decode($info);
         try{
             if (!$token) {
                 $retval['status'] = -1;
@@ -30,28 +31,23 @@ class DeviceController extends Controller
                 $retval['msg'] = '该用户不存在';
                 return response()->json($retval);
             }
-            $data['userId'] = $token;
-            $data['linkTime'] = time();
-            $data['createTime'] = time();
-            $deviceInfo = $device->createDevice($data);
-            $deviceItem = $device->find($deviceInfo['id']);
-            if (empty($resData)) {
-                $retval['status'] = -3;
-                $retval['msg'] = '该记录新建失败';
-                return response()->json($retval);
+            foreach ($info as $key => $value) {
+                $value['deviceName'] = $deviceName;
+                $value['userId'] = $token;
+                $value['createTime'] = strtotime($value['time']);
+                $deviceInfo = $device->createDevice($value);
             }
-            $deviceItem->increment($item, 1, ['updateTime' => time()]);
             $retval['status'] = 0;
-            $retval['msg'] = '更新成功';
+            $retval['msg'] = '新增成功';
             return response()->json($retval);
         } catch (QueryException $e) {
-            $retval['status'] = -4;
+            $retval['status'] = -3;
             $retval['msg'] = '操作失败';
             return response()->json($retval);
         }
     }
 
-    public function getDeviceInfo(Request $request)
+    public function getDeviceInfo(Request $request, User $user)
     {
         $token = $request->input('userToken');
         $token = checkToken($token);
@@ -77,6 +73,7 @@ class DeviceController extends Controller
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
+                        ->groupBy('type')
                         ->get();
                     break;
                 case 1:
@@ -85,6 +82,7 @@ class DeviceController extends Controller
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
+                        ->groupBy('type')
                         ->get();
                     break;
                 case 2:
@@ -93,6 +91,7 @@ class DeviceController extends Controller
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
+                        ->groupBy('type')
                         ->get();
                     break;
                 case 3:
@@ -101,6 +100,7 @@ class DeviceController extends Controller
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
+                        ->groupBy('type')
                         ->get();
                     break;
             }
