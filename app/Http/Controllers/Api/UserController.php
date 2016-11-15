@@ -237,7 +237,7 @@ class UserController extends BaseController
             }
         } catch (QueryException $e) {
             $retval['status'] = -4;
-            $retval['msg'] = $e->formatMessage();
+            $retval['msg'] = $e->message;
             return response()->json($retval);
         }
     }
