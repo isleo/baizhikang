@@ -223,7 +223,7 @@ class UserController extends BaseController
                 return response()->json($retval);
             }
 
-            $data = $request->except('mobile', 'password', 'status', 'loginTime', 'createTime');
+            $data = $request->except('mobile', 'password', 'status', 'loginTime', 'createTime', 'userToken');
             $data['id'] = $token;
             $state = $user->updateUser($data);
             if ($state !== false) {
