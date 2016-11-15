@@ -223,8 +223,9 @@ class UserController extends BaseController
                 return response()->json($retval);
             }
 
-            $data = $request->except('mobile', 'password', 'status', 'loginTime', 'createTime', 'userToken');
+            $data = $request->except('mobile', 'password', 'status', 'loginTime', 'createTime', 'updateTime', 'userToken');
             $data['id'] = $token;
+            $data['updateTime'] = time();
             $state = $user->updateUser($data);
             if ($state !== false) {
                 $retval['status'] = 0;
@@ -344,7 +345,7 @@ class UserController extends BaseController
         $data['password'] = md5(md5($request->input('password')));
         try {
             $res = $user->where('mobile', $data['mobile'])->first();
-            $data['createTime'] = time();
+            $data['updateTime'] = time();
             $resCode = $request->input('validateCode');
             $validateCode = Session::get('validateCode');
             if (!isset($validateCode[$data['mobile']]) || $resCode != $validateCode[$data['mobile']]) {

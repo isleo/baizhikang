@@ -52,7 +52,6 @@ class DeviceController extends Controller
         $token = $request->input('userToken');
         $token = checkToken($token);
         $deviceName = $request->input('deviceName');
-        $item = $request->input('item');
         $dateType = $request->input('dateType');
         try{
             if (!$token) {
@@ -69,7 +68,7 @@ class DeviceController extends Controller
             switch ($dateType) {
                 case 0:
                     $data = DB::table('bzk_device_info_log')
-                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m-%d %H') as days, sum($item)"))
+                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m-%d %H') as days, type, count(*)"))
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
@@ -78,7 +77,7 @@ class DeviceController extends Controller
                     break;
                 case 1:
                     $data = DB::table('bzk_device_info_log')
-                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m-%d') as days, sum($item)"))
+                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m-%d') as days, type, count(*)"))
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
@@ -87,7 +86,7 @@ class DeviceController extends Controller
                     break;
                 case 2:
                     $data = DB::table('bzk_device_info_log')
-                        ->select(DB::raw("from_unixtime(createTime, '%Y-%u') as days, sum($item)"))
+                        ->select(DB::raw("from_unixtime(createTime, '%Y-%u') as days, type, count(*)"))
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
@@ -96,7 +95,7 @@ class DeviceController extends Controller
                     break;
                 case 3:
                     $data = DB::table('bzk_device_info_log')
-                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m') as days, sum($item)"))
+                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m') as days, type, count(*)"))
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
