@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50634
 File Encoding         : 65001
 
-Date: 2016-11-05 14:43:39
+Date: 2016-11-16 22:11:44
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -23,15 +23,12 @@ CREATE TABLE `bzk_device_info_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
   `deviceName` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT '设备名',
   `userId` int(11) unsigned NOT NULL COMMENT '用户id',
-  `disconnectFre` int(11) unsigned DEFAULT '0' COMMENT '断开次数',
-  `sensitivityFre` int(11) unsigned DEFAULT '0' COMMENT '灵敏度报警',
-  `moveFre` int(11) unsigned DEFAULT '0' COMMENT '移动报警',
-  `disappearFre` int(11) unsigned DEFAULT '0' COMMENT '防丢报警',
-  `linkTime` int(10) unsigned DEFAULT NULL COMMENT '连接时间',
+  `type` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '断开次数',
+  `disconnect` int(11) unsigned DEFAULT '0' COMMENT '灵敏度报警',
   `createTime` int(10) unsigned DEFAULT NULL COMMENT '创建时间',
   `updateTime` int(10) unsigned DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Table structure for bzk_user_info
@@ -52,6 +49,8 @@ CREATE TABLE `bzk_user_info` (
   `qq` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'qq',
   `address` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '家庭地址',
   `avatar` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '图片地址',
+  `isPush` tinyint(1) unsigned DEFAULT '1' COMMENT '是否推送',
+  `channelId` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '推送id',
   `status` tinyint(1) unsigned DEFAULT '1' COMMENT '用户黑白名单',
   `loginTime` int(10) unsigned DEFAULT NULL COMMENT '登录时间',
   `createTime` int(10) unsigned DEFAULT NULL COMMENT '创建时间',
@@ -70,4 +69,4 @@ CREATE TABLE `bzk_user_relationship` (
   `createTime` int(10) unsigned DEFAULT NULL COMMENT '创建时间',
   `updateTime` int(10) unsigned DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
