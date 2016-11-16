@@ -63,7 +63,7 @@ class UserController extends BaseController
             }
         } catch (QueryException $e) {
             $this->api_response['status'] = -4;
-            $this->api_response['msg'] = '操作失败';
+            $this->api_response['msg'] = $e->getMessage();
         }
         return response()->json($this->api_response);
     }
@@ -96,7 +96,7 @@ class UserController extends BaseController
             }
         } catch (QueryException $e) {
             $this->api_response['status'] = -4;
-            $this->api_response['msg'] = '操作失败';
+            $this->api_response['msg'] = $e->getMessage();
         }
         return response()->json($this->api_response);
     }
@@ -201,7 +201,7 @@ class UserController extends BaseController
             }
         } catch (QueryException $e) {
             $retval['status'] = -5;
-            $retval['msg'] = '操作失败';
+            $retval['msg'] = $e->getMessage();
             return response()->json($retval);
         }
     }
@@ -282,7 +282,7 @@ class UserController extends BaseController
             return response()->json($retval);
         } catch (QueryException $e) {
             $retval['status'] = -5;
-            $retval['msg'] = '操作失败';
+            $retval['msg'] = $e->getMessage();
             return response()->json($retval);
         }
     }
@@ -331,7 +331,7 @@ class UserController extends BaseController
             }
         } catch (QueryException $e) {
             $retval['status'] = -6;
-            $retval['msg'] = '操作失败';
+            $retval['msg'] = $e->getMessage();
             return response()->json($retval);
         }
     }
@@ -364,7 +364,7 @@ class UserController extends BaseController
             }
         } catch (QueryException $e) {
             $this->api_response['status'] = -4;
-            $this->api_response['msg'] = '操作失败';
+            $this->api_response['msg'] = $e->getMessage();
         }
         return response()->json($this->api_response);
     }

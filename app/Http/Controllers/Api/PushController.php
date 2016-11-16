@@ -128,14 +128,14 @@ class PushController extends Controller
                 $retval['msg'] = '该用户不存在';
                 return response()->json($retval);
             }
-            $relationIdArr = $relationship->where('userId', $token)->lists('relationId');
+            $relationIdArr = $relationship->where('userId', $token)->lists('relationId')->toArray();
             if (!empty($relationIdArr)) {
                 $pushId = $relationIdArr;
                 $pushId[] = $token;
             } else {
                 $pushId[] = $token;
             }
-            $channelIdArr = $user->whereIn('id', $pushId)->('status', 1)->where('isPush', 1)->lists('channelId');
+            $channelIdArr = $user->whereIn('id', $pushId)->where('status', 1)->where('isPush', 1)->lists('channelId')->toArray();
             if (empty($channelIdArr)) {
                 $retval['status'] = 1;
                 $retval['msg'] = '无可推送的channelId';
@@ -143,14 +143,14 @@ class PushController extends Controller
             }
         } catch (QueryException $e) {
             $retval['status'] = -6;
-            $retval['msg'] = '操作失败';
+            $retval['msg'] = $e->getMessage();
             return response()->json($retval);
         }
         $deviceType = $request->input('deviceType');
         $msgType = $request->input('msgType');
         $msgText = $request->input('msgText');
         $this->sdk->setDeviceType($deviceType);
-        $msg = '';
+        $msg = [];
         switch($deviceType) {
             case 3:
             $msg = [
@@ -168,7 +168,7 @@ class PushController extends Controller
         $opts = [
             'msg_type' => (int)$msgType,
         ];
-        $rs = $this->sdk->pushBatchUniMsg($channelIdArr, $msg,  $opts);
+        $rs = $this->sdk->pushBatchUniMsg($channelIdArr, $msg, $opts);
         if ($rs !== false) {
             $retval['status'] = 0;
             $retval['msg'] = $rs;

@@ -18,7 +18,7 @@ class DeviceController extends Controller
         $deviceName = $request->input('deviceName');
         $token = checkToken($token);
         $info = $request->input('info');
-        $info = json_decode($info);
+        $info = json_decode($info, true);
         try{
             if (!$token) {
                 $retval['status'] = -1;
@@ -35,6 +35,7 @@ class DeviceController extends Controller
                 $value['deviceName'] = $deviceName;
                 $value['userId'] = $token;
                 $value['createTime'] = strtotime($value['time']);
+                unset($value['time']);
                 $deviceInfo = $device->createDevice($value);
             }
             $retval['status'] = 0;
@@ -42,7 +43,7 @@ class DeviceController extends Controller
             return response()->json($retval);
         } catch (QueryException $e) {
             $retval['status'] = -3;
-            $retval['msg'] = '操作失败';
+            $retval['msg'] = $e->getMessage();
             return response()->json($retval);
         }
     }
@@ -68,7 +69,7 @@ class DeviceController extends Controller
             switch ($dateType) {
                 case 0:
                     $data = DB::table('bzk_device_info_log')
-                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m-%d %H') as days, type, count(*)"))
+                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m-%d %H') as days, type, count(*) as frequency"))
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
@@ -77,7 +78,7 @@ class DeviceController extends Controller
                     break;
                 case 1:
                     $data = DB::table('bzk_device_info_log')
-                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m-%d') as days, type, count(*)"))
+                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m-%d') as days, type, count(*) as frequency"))
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
@@ -86,7 +87,7 @@ class DeviceController extends Controller
                     break;
                 case 2:
                     $data = DB::table('bzk_device_info_log')
-                        ->select(DB::raw("from_unixtime(createTime, '%Y-%u') as days, type, count(*)"))
+                        ->select(DB::raw("from_unixtime(createTime, '%Y-%u') as days, type, count(*) as frequency"))
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
@@ -95,7 +96,7 @@ class DeviceController extends Controller
                     break;
                 case 3:
                     $data = DB::table('bzk_device_info_log')
-                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m') as days, type, count(*)"))
+                        ->select(DB::raw("from_unixtime(createTime, '%Y-%m') as days, type, count(*) as frequency"))
                         ->where('userId', $token)
                         ->where('deviceName', $deviceName)
                         ->groupBy('days')
@@ -108,7 +109,7 @@ class DeviceController extends Controller
             return response()->json($retval);
         } catch (QueryException $e) {
             $retval['status'] = -3;
-            $retval['msg'] = '操作失败';
+            $retval['msg'] = $e->getMessage();
             return response()->json($retval);
         }
     }

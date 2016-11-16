@@ -28,6 +28,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function() {
     Route::post('addDeviceLog'         , 'DeviceController@addDeviceLog');
     Route::post('pushMsgToSingleDevice'         , 'PushController@pushMsgToSingleDevice');
     Route::post('pushMsgToAll'         , 'PushController@pushMsgToAll');
+    Route::post('pushBatchUniMsg'         , 'PushController@pushBatchUniMsg');
     Route::get('getValidateCode'         , 'UserController@getValidateCode');
     Route::get('getDeviceInfo'         , 'DeviceController@getDeviceInfo');
 });
