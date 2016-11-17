@@ -48,7 +48,7 @@ class AuthRegisterRequest extends Request
     public function response(array $errors)
     {
         $api_response['status'] = -1;
-        $api_response['msg'] = array_values($errors)[0];
+        $api_response['msg'] = array_values($errors)[0][0];
         return response()->json($api_response);
     }
 }
