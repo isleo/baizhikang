@@ -18,6 +18,7 @@ class DeviceController extends Controller
         $deviceName = $request->input('deviceName');
         $token = checkToken($token);
         $info = $request->input('info');
+        return response()->json(['data' => $info]);
         $info = json_decode($info, true);
         try{
             if (!$token) {
