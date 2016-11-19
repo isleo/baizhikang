@@ -15,7 +15,6 @@ class DeviceController extends Controller
     public function addDeviceLog(Request $request, User $user, Device $device)
     {
         $token = $request->input('userToken');
-        return response()->json(['data' => $token]);
         $deviceName = $request->input('deviceName');
         $token = checkToken($token);
         $info = $request->input('info');
