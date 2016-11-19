@@ -31,6 +31,11 @@ class DeviceController extends Controller
                 $retval['msg'] = '该用户不存在';
                 return response()->json($retval);
             }
+            if (empty($info)) {
+                $retval['status'] = -4;
+                $retval['msg'] = '设备监控数据为空';
+                return response()->json($retval);
+            }
             foreach ($info as $key => $value) {
                 $value['deviceName'] = $deviceName;
                 $value['userId'] = $token;

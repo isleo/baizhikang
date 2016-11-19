@@ -276,12 +276,18 @@ class UserController extends BaseController
             $data['userId'] = $token;
             $data['relationId'] = $bindData->id;
             $data['createTime'] = time();
+            $count = DB::table('bzk_user_relationship')->where('userId', $token)->count();
+            if ($count >= 3) {
+                $retval['status'] = -5;
+                $retval['msg'] = '绑定用户已达到上限';
+                return response()->json($retval);
+            }
             $relationship->createRelationship($data);
             $retval['status'] = 0;
             $retval['msg'] = '绑定成功';
             return response()->json($retval);
         } catch (QueryException $e) {
-            $retval['status'] = -5;
+            $retval['status'] = -6;
             $retval['msg'] = $e->getMessage();
             return response()->json($retval);
         }
@@ -341,9 +347,22 @@ class UserController extends BaseController
      */
     public function updatePassword(AuthRegisterRequest $request, User $user)
     {
+        $token = $request->input('userToken');
+        $token = checkToken($token);
         $data['mobile'] = $request->input('mobile');
         $data['password'] = md5(md5($request->input('password')));
         try {
+            if (!$token) {
+                $retval['status'] = -1;
+                $retval['msg'] = 'userToken出错';
+                return response()->json($retval);
+            }
+            $resData = $user->where('status', 1)->where('id', $token)->first();
+            if (empty($resData)) {
+                $retval['status'] = -2;
+                $retval['msg'] = '该用户不存在';
+                return response()->json($retval);
+            }
             $res = $user->where('mobile', $data['mobile'])->first();
             $data['updateTime'] = time();
             $resCode = $request->input('validateCode');
@@ -359,8 +378,75 @@ class UserController extends BaseController
                 $this->api_response['status'] = 0;
                 $this->api_response['msg'] = '修改密码成功';
             } else {
-                $this->api_response['status'] = -2;
+                $this->api_response['status'] = -4;
                 $this->api_response['msg'] = '手机号码不存在';
+            }
+        } catch (QueryException $e) {
+            $this->api_response['status'] = -5;
+            $this->api_response['msg'] = $e->getMessage();
+        }
+        return response()->json($this->api_response);
+    }
+
+    /**
+     *  
+     */
+    public function addSuggestion(Request $request, User $user)
+    {
+        $token = $request->input('userToken');
+        $token = checkToken($token);
+        $data['mobile'] = $request->input('mobile');
+        $data['suggestion'] = $request->input('suggestion');
+        try {
+            if (!$token) {
+                $retval['status'] = -1;
+                $retval['msg'] = 'userToken出错';
+                return response()->json($retval);
+            }
+            $resData = $user->where('status', 1)->where('id', $token)->first();
+            if (empty($resData)) {
+                $retval['status'] = -2;
+                $retval['msg'] = '该用户不存在';
+                return response()->json($retval);
+            }
+            $state = DB::table('bzk_user_suggestion')->insert($data);
+            $this->api_response['status'] = 0;
+            $this->api_response['msg'] = '新增成功';
+        } catch (QueryException $e) {
+            $this->api_response['status'] = -3;
+            $this->api_response['msg'] = $e->getMessage();
+        }
+        return response()->json($this->api_response);
+    }
+
+    /**
+     *  
+     */
+    public function checkDownload(Request $request, User $user)
+    {
+        $token = $request->input('userToken');
+        $token = checkToken($token);
+        $type = $request->input('type');
+        $version = $request->input('version');
+        try {
+            if (!$token) {
+                $retval['status'] = -1;
+                $retval['msg'] = 'userToken出错';
+                return response()->json($retval);
+            }
+            $resData = $user->where('status', 1)->where('id', $token)->first();
+            if (empty($resData)) {
+                $retval['status'] = -2;
+                $retval['msg'] = '该用户不存在';
+                return response()->json($retval);
+            }
+            $res = DB::table('bzk_download')->where('type', $type)->where('version', '>', $version)->first();
+            if (empty($res)) {
+                $this->api_response['status'] = -3;
+                $this->api_response['msg'] = '无新版本';
+            } else {
+                $this->api_response['status'] = 0;
+                $this->api_response['msg'] = $res->toArray();
             }
         } catch (QueryException $e) {
             $this->api_response['status'] = -4;
