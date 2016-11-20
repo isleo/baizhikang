@@ -149,7 +149,7 @@ class DeviceController extends Controller
                 3 => 'drop',
                 8 => 'off',
             ];
-            $inf0 = [
+            $info = [
                 'hour' => [
                     'detail' => [],
                     'count' => [],
