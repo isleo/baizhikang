@@ -168,8 +168,13 @@ class DeviceController extends Controller
                 ],
             ];
             foreach ($timeData as $key => $value) {
-                $info['hour'][$type[$value->type]]['detail'][]['time'] = $value->days;
-                $info['hour'][$type[$value->type]]['detail'][]['frequency'] = $value->frequency;
+                $hour = $info['hour'][$type[$value->type]]['detail'];
+
+                $hour[] = [
+                    'time' => $value->days,
+                    'frequency' => $value->frequency,
+                ];
+
                 foreach ($timeCount as $k => $v) {
                     if ($value->type == $v->type) {
                         $info['hour'][$type[$value->type]]['count'] = $v->frequency;
