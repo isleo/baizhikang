@@ -168,13 +168,11 @@ class DeviceController extends Controller
                 ],
             ];
             foreach ($timeData as $key => $value) {
-                $hour = $info['hour'][$type[$value->type]]['detail'];
-
-                $hour[] = [
-                    'time' => $value->days,
-                    'frequency' => $value->frequency,
+                $info['hour'][$type[$value->type]]['detail'][] => [
+                'time' => $value->days,
+                'frequency' => $value->frequency,
                 ];
-
+                // $info['hour'][$type[$value->type]]['detail'][]['frequency'] = $value->frequency;
                 foreach ($timeCount as $k => $v) {
                     if ($value->type == $v->type) {
                         $info['hour'][$type[$value->type]]['count'] = $v->frequency;
@@ -200,8 +198,8 @@ class DeviceController extends Controller
                 }
             }
             foreach ($yearData as $key => $value) {
-                $info['year'][$type[$value->type]]['detail'][]['time'] = $value->days;
-                $info['year'][$type[$value->type]]['detail'][]['frequency'] = $value->frequency;
+                $info['year'][$type[$value->type]]['detail']['time'] = $value->days;
+                $info['year'][$type[$value->type]]['detail']['frequency'] = $value->frequency;
                 foreach ($yearCount as $k => $v) {
                     if ($value->type == $v->type) {
                         $info['year'][$type[$value->type]]['count'] = $v->frequency;
