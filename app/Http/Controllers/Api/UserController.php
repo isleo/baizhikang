@@ -353,34 +353,29 @@ class UserController extends BaseController
         $data['password'] = md5(md5($request->input('password')));
         try {
             if (!$token) {
-                $retval['status'] = -1;
+                $retval['status'] = -2;
                 $retval['msg'] = 'userToken出错';
                 return response()->json($retval);
             }
             $resData = $user->where('status', 1)->where('id', $token)->first();
             if (empty($resData)) {
-                $retval['status'] = -2;
+                $retval['status'] = -3;
                 $retval['msg'] = '该用户不存在';
                 return response()->json($retval);
             }
-            $res = $user->where('mobile', $data['mobile'])->first();
             $data['updateTime'] = time();
             $resCode = $request->input('validateCode');
             $validateCode = Session::get('validateCode');
             if (!isset($validateCode[$data['mobile']]) || $resCode != $validateCode[$data['mobile']]) {
-                $this->api_response['status'] = -3;
+                $this->api_response['status'] = -4;
                 $this->api_response['msg'] = '验证码错误';
                 return response()->json($this->api_response);
             }
-            if (!empty($res)) {
-                $data['id'] = $res->id;
-                $state = $user->updateUser($data);
-                $this->api_response['status'] = 0;
-                $this->api_response['msg'] = '修改密码成功';
-            } else {
-                $this->api_response['status'] = -4;
-                $this->api_response['msg'] = '手机号码不存在';
-            }
+            $data['id'] = $res->id;
+            unset($data['mobile']);
+            $state = $user->updateUser($data);
+            $this->api_response['status'] = 0;
+            $this->api_response['msg'] = '修改密码成功';
         } catch (QueryException $e) {
             $this->api_response['status'] = -5;
             $this->api_response['msg'] = $e->getMessage();
@@ -453,5 +448,34 @@ class UserController extends BaseController
             $this->api_response['msg'] = $e->getMessage();
         }
         return response()->json($this->api_response);
+    }
+
+    public function getBindUser(Request $request, User $user, UserRelationship $relationship)
+    {
+        $token = $request->input('userToken');
+        $token = checkToken($token);
+        $token =1;
+        try {
+            if (!$token) {
+                $retval['status'] = -1;
+                $retval['msg'] = 'userToken出错';
+                return response()->json($retval);
+            }
+            $resData = $user->where('status', 1)->where('id', $token)->first();
+            if (empty($resData)) {
+                $retval['status'] = -2;
+                $retval['msg'] = '该用户不存在';
+                return response()->json($retval);
+            }
+            $relationUserIdArr = DB::table('bzk_user_relationship')->where('userId', $token)->lists('relationId');
+            $relationUserArr = $user->whereIn('id', $relationUserIdArr)->select('mobile', 'nickname')->get();
+            $retval['status'] = 0;
+            $retval['msg'] = $relationUserArr;
+            return response()->json($retval);
+        } catch (QueryException $e) {
+            $retval['status'] = -3;
+            $retval['msg'] = $e->getMessage();
+            return response()->json($retval);
+        }
     }
 }

@@ -49,6 +49,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function() {
     Route::post('addSuggestion'         , 'UserController@addSuggestion');
     Route::post('register'         , 'UserController@register');
     Route::post('bindUser'         , 'UserController@bindUser');
+    Route::get('getBindUser'         , 'UserController@getBindUser');
     Route::post('unbindUser'         , 'UserController@unbindUser');
     Route::post('addDeviceLog'         , 'DeviceController@addDeviceLog');
     Route::post('pushMsgToSingleDevice'         , 'PushController@pushMsgToSingleDevice');
