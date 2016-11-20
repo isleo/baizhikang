@@ -168,8 +168,8 @@ class DeviceController extends Controller
                 ],
             ];
             foreach ($timeData as $key => $value) {
-                $info['hour'][$type[$value->type]]['detail']['time'] = $value->days;
-                $info['hour'][$type[$value->type]]['detail']['frequency'] = $value->frequency;
+                $info['hour'][$type[$value->type]]['detail'][]['time'] = $value->days;
+                $info['hour'][$type[$value->type]]['detail'][]['frequency'] = $value->frequency;
                 foreach ($timeCount as $k => $v) {
                     if ($value->type == $v->type) {
                         $info['hour'][$type[$value->type]]['count'] = $v->frequency;
@@ -177,8 +177,8 @@ class DeviceController extends Controller
                 }
             }
             foreach ($dayData as $key => $value) {
-                $info['day'][$type[$value->type]]['detail']['time'] = $value->days;
-                $info['day'][$type[$value->type]]['detail']['frequency'] = $value->frequency;
+                $info['day'][$type[$value->type]]['detail'][]['time'] = $value->days;
+                $info['day'][$type[$value->type]]['detail'][]['frequency'] = $value->frequency;
                 foreach ($dayCount as $k => $v) {
                     if ($value->type == $v->type) {
                         $info['day'][$type[$value->type]]['count'] = $v->frequency;
@@ -186,8 +186,8 @@ class DeviceController extends Controller
                 }
             }
             foreach ($weekData as $key => $value) {
-                $info['week'][$type[$value->type]]['detail']['time'] = $value->days;
-                $info['week'][$type[$value->type]]['detail']['frequency'] = $value->frequency;
+                $info['week'][$type[$value->type]]['detail'][]['time'] = $value->days;
+                $info['week'][$type[$value->type]]['detail'][]['frequency'] = $value->frequency;
                 foreach ($weekCount as $k => $v) {
                     if ($value->type == $v->type) {
                         $info['week'][$type[$value->type]]['count'] = $v->frequency;
@@ -195,8 +195,8 @@ class DeviceController extends Controller
                 }
             }
             foreach ($yearData as $key => $value) {
-                $info['year'][$type[$value->type]]['detail']['time'] = $value->days;
-                $info['year'][$type[$value->type]]['detail']['frequency'] = $value->frequency;
+                $info['year'][$type[$value->type]]['detail'][]['time'] = $value->days;
+                $info['year'][$type[$value->type]]['detail'][]['frequency'] = $value->frequency;
                 foreach ($yearCount as $k => $v) {
                     if ($value->type == $v->type) {
                         $info['year'][$type[$value->type]]['count'] = $v->frequency;
