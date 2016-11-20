@@ -151,20 +151,15 @@ class DeviceController extends Controller
             ];
             $info = [
                 'hour' => [
-                    'detail' => [],
-                    'count' => [],
+
                 ],
                 'day' => [
-                    'detail' => [],
-                    'count' => [],
+
                 ],
                 'week' => [
-                    'detail' => [],
-                    'count' => [],
                 ],
                 'year' => [
-                    'detail' => [],
-                    'count' => [],
+
                 ],
             ];
             foreach ($timeData as $key => $value) {
