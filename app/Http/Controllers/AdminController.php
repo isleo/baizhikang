@@ -39,7 +39,7 @@ class AdminController extends Controller
                 $data[$key]['id'] = $value->id;
                 $data[$key]['deviceName'] = $value->deviceName;
                 $data[$key]['type'] = $value->type;
-                $data[$key]['mobile'] = $mobileArr[$value->userId]; 
+                $data[$key]['mobile'] = empty($mobileArr[$value->userId]) ? '' : $mobileArr[$value->userId]; 
                 $data[$key]['createTime'] = $value->createTime;
             }
             $page = new Page($count, $rows);
