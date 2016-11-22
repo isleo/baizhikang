@@ -210,7 +210,11 @@ try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                                                             {{$value->nickname}}
                                                         </td>
                                                         <td>
-                                                            {{$value->gender}}
+                                                        @if ($value->gender == 1)
+                                                            男
+                                                        @else
+                                                            女
+                                                        @endif
                                                         </td>
                                                         <td>
                                                             {{$value->weight}}
@@ -219,7 +223,9 @@ try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                                                             {{$value->height}}
                                                         </td>
                                                         <td>
+                                                        @if (!empty($value->birthTime))
                                                             {{date('Y-m-d H:i:s', $value->birthTime)}}
+                                                        @endif
                                                         </td>
                                                         <td>
                                                             {{$value->age}}
@@ -240,16 +246,28 @@ try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                                                             {{$value->channelId}}
                                                         </td>
                                                         <td>
+                                                        @if (!empty($value->loginTime))
                                                             {{date('Y-m-d H:i:s', $value->loginTime)}}
+                                                        @endif
                                                         </td>
                                                         <td>
+                                                        @if (!empty($value->loginTime))
                                                             {{date('Y-m-d H:i:s', $value->createTime)}}
+                                                        @endif
                                                         </td>
                                                         <td>
-                                                            {{$value->status}}
+                                                        @if ($value->status == 1)
+                                                            正常
+                                                        @else
+                                                            拉黑
+                                                        @endif
                                                         </td>
                                                         <td>
-                                                            <a href>拉黑</a>
+                                                        @if ($value->status == 1)
+                                                            <a href="{{url('/admin/defriend')}}?id={{$value->id}}&status=0">拉黑</a>
+                                                        @else
+                                                            <a href="{{url('/admin/defriend')}}?id={{$value->id}}&status=1">解除</a>
+                                                        @endif
                                                         </td>
                                                     </tr>
                                                     @endforeach

@@ -77,4 +77,11 @@ class AdminController extends Controller
             $showPage = $page->show();
             return view('ace.userInfo', ['data' => $userInfo, 'showPage' => $showPage]);
     }
+
+    public function defriend(Request $request) {
+            $id = $request->input('id');
+            $status = $request->input('status');
+            $deviceInfo = DB::table('bzk_user_info')->where('id', $id)->update(['status' => $status]);
+            return redirect('/admin/userInfoIndex');
+    }
 }
