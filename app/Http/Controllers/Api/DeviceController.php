@@ -213,6 +213,10 @@ class DeviceController extends Controller
                     }
                 } 
             }
+            empty($info['hour']) && $info['hour'] = "" ;
+            empty($info['day']) && $info['day'] = "" ;
+            empty($info['week']) && $info['week'] = "" ;
+            empty($info['year']) && $info['year'] = "" ;
             $retval['status'] = 0;
             $retval['msg'] = $info;
             return response()->json($retval);
