@@ -116,8 +116,12 @@ try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
                                                                          <ul class="nav nav-list">
                         <li class="active">
                             <a href="{{url('/admin/index')}}">
-                                <i class="icon-dashboard"></i>
-                                <span class="menu-text"> 设备信息</span>
+                                <span class="menu-text">设备信息</span>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="{{url('/admin/userInfoIndex')}}">
+                                <span class="menu-text">用户信息</span>
                             </a>
                         </li>
 
