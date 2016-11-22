@@ -38,5 +38,6 @@ CREATE TABLE `bzk_user_suggestion` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `mobile` varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT '手机号码',
   `content` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '意见内容',
+  `createTime` int(10) DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
