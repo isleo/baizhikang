@@ -215,10 +215,22 @@ class DeviceController extends Controller
             }
 
             $defaultArr =  [
-                'sensitive' => [], 
-                'move' => [], 
-                'drop' => [], 
-                'off' => [], 
+                'sensitive' => [
+                    'detail' => [],
+                    'count' => 0,
+                ], 
+                'move' => [
+                    'detail' => [],
+                    'count' => 0,
+                ], 
+                'drop' => [
+                    'detail' => [],
+                    'count' => 0,
+                ], 
+                'off' => [
+                    'detail' => [],
+                    'count' => 0,
+                ], 
             ];
             empty($info['hour']) && $info['hour'] = $defaultArr;
             empty($info['day']) && $info['day'] =  $defaultArr;
