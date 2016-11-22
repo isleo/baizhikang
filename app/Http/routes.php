@@ -25,7 +25,10 @@ Route::get('admin/postLogin'         , 'AdminController@postLogin');
 Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function() {
     Route::get('index'         , 'AdminController@index');
     Route::get('userInfoIndex'         , 'AdminController@userInfoIndex');
+    Route::get('suggestionIndex'         , 'AdminController@suggestionIndex');
+    Route::get('appIndex'         , 'AdminController@appIndex');
     Route::get('defriend'         , 'AdminController@defriend');
+    Route::post('uploadApp'         , 'AdminController@uploadApp');
 });
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function() {
 

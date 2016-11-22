@@ -179,35 +179,41 @@ try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                             <div class="col-xs-12">
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <h3 class="header smaller lighter blue">设备信息</h3>
+                                        <h3 class="header smaller lighter blue">app信息</h3>
                                         <div class="table-responsive">
                                             <table id="sample-table-2" class="table table-striped table-bordered table-hover">
                                                 <thead>
                                                     <tr>
                                                         <th>id</th>
-                                                        <th>设备号</th>
-                                                        <th>用户账号</th>
-                                                        <th>报警类型</th>
-                                                        <th>报警时间</th>
+                                                        <th>操作系统</th>
+                                                        <th>版本</th>
+                                                        <th>下载地址</th>
+                                                        <th>创建时间</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @foreach ($data as $value)
                                                     <tr>
                                                         <td class="center">
-                                                            {{$value['id']}}
+                                                            {{$value->id}}
                                                         </td>
                                                         <td>
-                                                            {{$value['deviceName']}}
+                                                        @if ($value->type == 0)
+                                                            Android
+                                                        @else
+                                                            iOS
+                                                        @endif
                                                         </td>
                                                         <td>
-                                                            {{$value['mobile']}}
+                                                            {{$value->version}}
                                                         </td>
                                                         <td>
-                                                            {{$value['type']}}
+                                                            {{$value->url}}
                                                         </td>
                                                         <td>
-                                                            {{date('Y-m-d H:i:s', $value['createTime'])}}
+                                                        @if (!empty($value->createTime))
+                                                            {{date('Y-m-d H:i:s', $value->createTime)}}
+                                                        @endif
                                                         </td>
                                                     </tr>
                                                     @endforeach
@@ -220,6 +226,16 @@ try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                         </div><!-- /.row -->
                         <div class='center'>{!!$showPage!!}</div>
                     </div><!-- /.page-content -->
+                        <div  style="margin-left: 100px;">
+                        <form method="POST" action="{{url('/admin/uploadApp')}}" enctype="multipart/form-data">
+                            操作系统：
+                                    <input type="radio" name="type" value="0"/>Android
+                                    <input type="radio" name="type" value="1"/>IOS<br/>
+                            版本：<input type="text" name="version"/><br/>
+                            app：<input type="file" name="app"/><br/>
+                            <input type="submit"/>
+                        </form>
+                        </div>
                 </div><!-- /.main-content -->
 
                 <div class="ace-settings-container" id="ace-settings-container">

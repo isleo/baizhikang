@@ -391,7 +391,8 @@ class UserController extends BaseController
         $token = $request->input('userToken');
         $token = checkToken($token);
         $data['mobile'] = $request->input('mobile');
-        $data['suggestion'] = $request->input('suggestion');
+        $data['content'] = $request->input('content');
+        $data['createTime'] = time();
         try {
             if (!$token) {
                 $retval['status'] = -1;

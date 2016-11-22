@@ -179,35 +179,31 @@ try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                             <div class="col-xs-12">
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <h3 class="header smaller lighter blue">设备信息</h3>
+                                        <h3 class="header smaller lighter blue">意见信息</h3>
                                         <div class="table-responsive">
                                             <table id="sample-table-2" class="table table-striped table-bordered table-hover">
                                                 <thead>
                                                     <tr>
                                                         <th>id</th>
-                                                        <th>设备号</th>
-                                                        <th>用户账号</th>
-                                                        <th>报警类型</th>
-                                                        <th>报警时间</th>
+                                                        <th>电话号码</th>
+                                                        <th>意见</th>
+                                                        <th>创建时间</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @foreach ($data as $value)
                                                     <tr>
                                                         <td class="center">
-                                                            {{$value['id']}}
+                                                            {{$value->id}}
                                                         </td>
                                                         <td>
-                                                            {{$value['deviceName']}}
+                                                            {{$value->mobile}}
                                                         </td>
                                                         <td>
-                                                            {{$value['mobile']}}
+                                                            {{$value->content}}
                                                         </td>
                                                         <td>
-                                                            {{$value['type']}}
-                                                        </td>
-                                                        <td>
-                                                            {{date('Y-m-d H:i:s', $value['createTime'])}}
+                                                            {{date('Y-m-d H:i:s', $value->createTime)}}
                                                         </td>
                                                     </tr>
                                                     @endforeach

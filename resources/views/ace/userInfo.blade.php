@@ -124,6 +124,16 @@ try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
                                 <span class="menu-text">用户信息</span>
                             </a>
                         </li>
+                        <li class="active">
+                            <a href="{{url('/admin/suggestionIndex')}}">
+                                <span class="menu-text">意见信息</span>
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="{{url('/admin/appIndex')}}">
+                                <span class="menu-text">app信息</span>
+                            </a>
+                        </li>
 
                     </ul><!-- /.nav-list -->
 
@@ -251,7 +261,7 @@ try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
                                                         @endif
                                                         </td>
                                                         <td>
-                                                        @if (!empty($value->loginTime))
+                                                        @if (!empty($value->createTime))
                                                             {{date('Y-m-d H:i:s', $value->createTime)}}
                                                         @endif
                                                         </td>
