@@ -24,6 +24,7 @@ Route::get('admin/login'         , 'AdminController@login');
 Route::get('admin/postLogin'         , 'AdminController@postLogin');
 Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function() {
     Route::get('index'         , 'AdminController@index');
+    Route::get('userInfoIndex'         , 'AdminController@userInfoIndex');
     // Route::post('login'         , 'UserController@login');
     // Route::post('uploadAvatar'         , 'UserController@uploadAvatar');
     // Route::post('updateUserInfo'         , 'UserController@updateUserInfo');

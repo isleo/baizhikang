@@ -46,4 +46,35 @@ class AdminController extends Controller
             $showPage = $page->show();
             return view('ace.deviceInfo', ['data' => $data, 'showPage' => $showPage]);
     }
+
+    public function userInfoIndex(Request $request) {
+            $page = $request->input('page');
+            $page = !empty($page) ? $page : 0;
+            $rows = 2;
+            $count = DB::table('bzk_user_info')->count();
+            $userInfo = DB::table('bzk_user_info')->skip(($page-1) * $rows)->take($rows)->get();
+            $userIdArr = DB::table('bzk_user_info')->skip(($page-1) * $rows)->take($rows)->lists('id');
+            $bindIdArr = DB::table('bzk_user_relationship')->whereIn('userId', $userIdArr)->lists('relationId');
+            $bindArr = DB::table('bzk_user_relationship')->whereIn('userId', $userIdArr)->get();
+            $bindUserArr = DB::table('bzk_user_info')->whereIn('id', $bindIdArr)->lists('mobile', 'id');
+            foreach ($userInfo as $key => $value) {
+                $userInfo[$key]->bindId = [];
+                foreach ($bindArr as $k => $v) {
+                    if ($v->userId == $value->id) {
+                        $userInfo[$key]->bindId[] = $v->relationId;
+                    }
+                }
+                $userInfo[$key]->bindUser = [];
+                foreach ($userInfo[$key]->bindId as $t => $s) {
+                    foreach ($bindUserArr as $a => $b) {
+                        if ($s == $a) {
+                            $userInfo[$key]->bindUser[] = $b;
+                        }
+                    }
+                }
+            }
+            $page = new Page($count, $rows);
+            $showPage = $page->show();
+            return view('ace.userInfo', ['data' => $userInfo, 'showPage' => $showPage]);
+    }
 }
