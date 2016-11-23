@@ -455,7 +455,7 @@ class UserController extends BaseController
     {
         $token = $request->input('userToken');
         $token = checkToken($token);
-        $token =1;
+        // $token =1;
         try {
             if (!$token) {
                 $retval['status'] = -1;
