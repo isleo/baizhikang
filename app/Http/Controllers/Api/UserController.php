@@ -56,7 +56,7 @@ class UserController extends BaseController
                 $userData = $resData->toArray();
 
                 foreach ($userData as $key => $value) {
-                    $value[$key] = empty($value) || $value == NULL ? '' : $value;
+                    $value->$key = empty($value) || $value == NULL ? '' : $value;
                 }
                 $userData['loginTime'] = (string)time();
                 $userData['userToken'] = generateToken($userData['id']);
