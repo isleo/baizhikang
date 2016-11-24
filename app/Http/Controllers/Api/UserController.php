@@ -54,6 +54,10 @@ class UserController extends BaseController
                 $user->updateUser($data);
                 $this->api_response['status'] = 0;
                 $userData = $resData->toArray();
+
+                foreach ($userData as $key => $value) {
+                    $value[$key] = empty($value) || $value == NULL ? '' : $value;
+                }
                 $userData['loginTime'] = (string)time();
                 $userData['userToken'] = generateToken($userData['id']);
                 $this->api_response['msg'] = $userData;
