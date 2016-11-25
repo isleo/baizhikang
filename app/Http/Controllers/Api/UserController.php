@@ -483,4 +483,12 @@ class UserController extends BaseController
             return response()->json($retval);
         }
     }
+
+
+    public function Agreement(Request $request)
+    {
+
+        echo '用户协议';exit;
+    }
+    
 }

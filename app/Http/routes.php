@@ -47,5 +47,6 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function() {
     Route::post('pushBatchUniMsg'         , 'PushController@pushBatchUniMsg');
     Route::get('getValidateCode'         , 'UserController@getValidateCode');
     Route::get('checkDownload'         , 'UserController@checkDownload');
+    Route::get('agreement'         , 'UserController@Agreement');  
     Route::get('getDeviceInfo'         , 'DeviceController@getDeviceInfo');
 });
