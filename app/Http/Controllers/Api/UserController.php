@@ -488,7 +488,7 @@ class UserController extends BaseController
     public function Agreement(Request $request)
     {
 
-        return view('agreement.html');
+        return view('agreement');
     }
 
 }
