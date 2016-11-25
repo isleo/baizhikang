@@ -187,9 +187,10 @@ class DeviceController extends Controller
                     }
                 }
             }
+            $nowWeek = date('W');
             foreach ($weekData as $key => $value) {
                 $info['week'][$type[$value->type]]['detail'][] = [
-                'time' => $value->days,
+                'time' => 4 - ($nowWeek - $value->days),
                 'frequency' => $value->frequency,
                 ];                       
 /*                $info['week'][$type[$value->type]]['detail'][]['time'] = $value->days;
