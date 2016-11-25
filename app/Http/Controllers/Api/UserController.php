@@ -488,7 +488,7 @@ class UserController extends BaseController
     public function Agreement(Request $request)
     {
 
-        echo '用户协议';exit;
+        return view('agreement.html');
     }
-    
+
 }
