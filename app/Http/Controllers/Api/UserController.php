@@ -111,24 +111,51 @@ class UserController extends BaseController
     public function getValidateCode(Request $request)
     {
         $mobile = $request->input('mobile');
+        $type = $request->input('type');
+        $token = $request->input('userToken');
+        $token = checkToken($token);
+        $userMobile = '';
         if (empty($mobile)) {
             $retval['status'] = -3;
             $retval['msg'] = '手机号码为空';
             return response()->json($retval);
+        }
+        if ($type == 2) {
+            if ($token) {
+                $resData = $user->where('status', 1)->where('id', $token)->first();
+                if (!empty($resData)) {
+                    $userMobile = $resData->mobile;
+                }
+            }        
         }
         $umsCode = mt_rand(1000,9999);
         $umsCodeArr = empty(Session::get('validateCode'))?[]:Session::get('validateCode');
         $umsCodeArr[$mobile] = $umsCode;
         Session::put('validateCode', $umsCodeArr);
         $c = new TopClient;
-        $c->appkey = '23436766';
-        $c->secretKey = 'a7d084b977413ee98f17b84e77c6ab8a';
+        $c->appkey = '23537819';
+        $c->secretKey = 'e7c1599df0dd9aaa82b16ce89f18c9b1';
         $req = new AlibabaAliqinFcSmsNumSendRequest;
         $req->setSmsType("normal");
-        $req->setSmsFreeSignName('爱拍test');
-        $req->setSmsParam('{"number":"' . $umsCode . '"}');
+        $req->setSmsFreeSignName('百智康');
+        if ($type == 2) {
+            $req->setSmsParam('{"code":"' . $umsCode . '", "phone":"'. $userMobile . '"}');
+        } else {
+            $req->setSmsParam('{"code":"' . $umsCode . '"}');
+        }
         $req->setRecNum($mobile);
-        $req->setSmsTemplateCode('SMS_13200721');
+        switch ($type) {
+            case 1:
+                $template = 'SMS_26885049';
+                break;
+            case 2:
+                $template = 'SMS_26930002';
+                break;
+            case 3:
+                $template = 'SMS_26785017';
+                break;
+        }
+        $req->setSmsTemplateCode($template);
         $resp = $c->execute($req);
         $msg =  json_decode(json_encode($resp), true);
         if (array_key_exists('result', $msg)) {
