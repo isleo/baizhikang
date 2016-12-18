@@ -49,4 +49,8 @@ Route::group(['prefix' => 'api', 'namespace' => 'Api'], function() {
     Route::get('checkDownload'         , 'UserController@checkDownload');
     Route::get('agreement'         , 'UserController@Agreement');  
     Route::get('getDeviceInfo'         , 'DeviceController@getDeviceInfo');
+    Route::get('getDeviceInfoAndroid'         , 'DeviceController@getDeviceInfoAndroid');
+    Route::get('getDeviceInfoFreAndroid'         , 'DeviceController@getDeviceInfoFreAndroid');
 });
+
+

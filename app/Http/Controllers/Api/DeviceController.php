@@ -41,6 +41,10 @@ class DeviceController extends Controller
                 $value['userId'] = $token;
                 $value['createTime'] = strtotime($value['time']);
                 unset($value['time']);
+                if ($value['type'] == 1) {
+                     $value['disconnect'] = $value['timelong'];
+                     unset($value['timelong']);
+                }
                 $deviceInfo = $device->createDevice($value);
             }
             $retval['status'] = 0;
@@ -246,4 +250,123 @@ class DeviceController extends Controller
             return response()->json($retval);
         }
     }
+
+
+public function getDeviceInfoAndroid(Request $request, User $user) {
+        $token = $request->input('userToken');
+        $token = checkToken($token);
+        $deviceName = $request->input('deviceName');
+        $dateType = $request->input('dateType');
+        try{
+            if (!$token) {
+                $retval['status'] = -1;
+                $retval['msg'] = 'userToken出错';
+                return response()->json($retval);
+            }
+            $resData = $user->where('status', 1)->where('id', $token)->first();
+            if (empty($resData)) {
+                $retval['status'] = -2;
+                $retval['msg'] = '该用户不存在';
+                return response()->json($retval);
+            }
+/*
+            $token  = 3;
+            $deviceName  = 'F2:D4:B8:46:11:E4';*/
+
+            $time = $_SERVER['REQUEST_TIME'];
+            $dayTime = $time - 90 * 24 * 60 * 60;
+            $dayData = DB::table('bzk_device_info_log')
+                    ->select(DB::raw("from_unixtime(createTime, '%m%d') as days, count(*) as frequency"))
+                    ->where('userId', $token)
+                    ->where('createTime', '>', $dayTime)
+                    ->where('deviceName', $deviceName)
+                    ->where('type', 1)
+                    ->groupBy('days')
+                    ->get();
+
+             $info  = [];
+             foreach ($dayData as $key => $value) {
+                       $info[$value->days] =  [
+                            'days' => $value->days,
+                            'frequency' => $value->frequency,
+                     ];   
+             }      
+
+
+             for ($i = 0; $i <= 90; $i++) { 
+                $day = date('md', $time - $i * 60 * 60 * 24);
+                if (!isset($info[$day])) {
+                     $noDataDay = [
+                            'days' => $day,
+                            'frequency' => 0,
+                     ];        
+                      $info[$day] = $noDataDay;            
+                }
+             }
+             krsort($info);
+            $retval['status'] = 0;
+            $retval['msg'] = array_values($info);
+            echo json_encode($retval);exit;
+            return response()->json($retval);
+        } catch (QueryException $e) {
+            $retval['status'] = -3;
+            $retval['msg'] = $e->getMessage();
+            return response()->json($retval);
+        }
+    }
+
+
+
+    public function getDeviceInfoFreAndroid(Request $request, User $user) {
+        $token = $request->input('userToken');
+        // $token = checkToken($token);
+        $deviceName = $request->input('deviceName');
+        $dateType = $request->input('dateType');
+        $dateTime = ($request->input('dateTime') != null && !empty($request->input('dateTime'))) ? $request->input('dateTime') :  $_SERVER['REQUEST_TIME'];
+
+
+        try{
+/*            if (!$token) {
+                $retval['status'] = -1;
+                $retval['msg'] = 'userToken出错';
+                return response()->json($retval);
+            }
+            $resData = $user->where('status', 1)->where('id', $token)->first();
+            if (empty($resData)) {
+                $retval['status'] = -2;
+                $retval['msg'] = '该用户不存在';
+                return response()->json($retval);
+            }*/
+
+            $token  = 3;
+            $deviceName  = 'F2:D4:B8:46:11:E4';
+            $timeBegin = strtotime(date("Y-m-d", $dateTime));
+            $timeEnd = $timeBegin + 24*60*60-1;
+
+            $dayCount = DB::table('bzk_device_info_log')
+                ->where('userId', $token)
+                ->where('createTime', '>', $timeBegin)
+                ->where('createTime', '<', $timeEnd)
+                ->where('deviceName', $deviceName)
+                ->where('type', 1)
+                ->get();
+
+                $info = [];
+             foreach ($dayCount as $key => $value) {
+                       $info[] =  [
+                            'num' => $key,
+                            'time' => $value->disconnect,
+                     ];   
+             }      
+            $retval['status'] = 0;
+            $retval['msg'] = array_values($info);
+ 
+            return response()->json($retval);
+        } catch (QueryException $e) {
+            $retval['status'] = -3;
+            $retval['msg'] = $e->getMessage();
+            return response()->json($retval);
+        }
+    }
+
 }
