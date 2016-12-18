@@ -319,14 +319,14 @@ public function getDeviceInfoAndroid(Request $request, User $user) {
 
     public function getDeviceInfoFreAndroid(Request $request, User $user) {
         $token = $request->input('userToken');
-        // $token = checkToken($token);
+        $token = checkToken($token);
         $deviceName = $request->input('deviceName');
         $dateType = $request->input('dateType');
         $dateTime = ($request->input('dateTime') != null && !empty($request->input('dateTime'))) ? $request->input('dateTime') :  $_SERVER['REQUEST_TIME'];
 
 
         try{
-/*            if (!$token) {
+            if (!$token) {
                 $retval['status'] = -1;
                 $retval['msg'] = 'userToken出错';
                 return response()->json($retval);
@@ -336,10 +336,10 @@ public function getDeviceInfoAndroid(Request $request, User $user) {
                 $retval['status'] = -2;
                 $retval['msg'] = '该用户不存在';
                 return response()->json($retval);
-            }*/
+            }
 
-            $token  = 3;
-            $deviceName  = 'F2:D4:B8:46:11:E4';
+/*            $token  = 3;
+            $deviceName  = 'F2:D4:B8:46:11:E4';*/
             $timeBegin = strtotime(date("Y-m-d", $dateTime));
             $timeEnd = $timeBegin + 24*60*60-1;
 
