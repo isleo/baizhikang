@@ -473,7 +473,10 @@ class UserController extends BaseController
                 $this->api_response['msg'] = '无新版本';
             } else {
                 $this->api_response['status'] = 0;
-                $this->api_response['msg'] = $res->toArray();
+                $this->api_response['msg'] = '存在新版本';
+                $this->api_response['data']['version'] = $res->version;
+                $this->api_response['data']['url'] = $res->url;
+
             }
         } catch (QueryException $e) {
             $this->api_response['status'] = -4;
