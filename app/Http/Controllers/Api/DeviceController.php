@@ -43,7 +43,9 @@ class DeviceController extends Controller
                 unset($value['time']);
                 if ($value['type'] == 1) {
                      $value['disconnect'] = $value['timelong'];
-                     unset($value['timelong']);
+                }
+                if (isset($value['timelong'])) {
+                    unset($value['timelong']);   
                 }
                 $deviceInfo = $device->createDevice($value);
             }
