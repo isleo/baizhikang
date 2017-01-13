@@ -108,7 +108,7 @@ class UserController extends BaseController
     /**
      *  validate code
      */
-    public function getValidateCode(Request $request)
+    public function getValidateCode(Request $request, User $user)
     {
         $mobile = $request->input('mobile');
         $type = $request->input('type');
